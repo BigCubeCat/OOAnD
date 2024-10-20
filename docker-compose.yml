@@ -1,4 +1,9 @@
 services:
+  backend:
+    build: ./backend/
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+
   postgres:
     image: postgres:latest
     environment:
