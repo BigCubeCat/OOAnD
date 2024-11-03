@@ -1,9 +1,4 @@
 services:
-  backend:
-    build: ./backend/
-    ports:
-      - "${BACKEND_PORT}:${BACKEND_PORT}"
-
   postgres:
     image: postgres:latest
     environment:
@@ -11,9 +6,28 @@ services:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASSWORD}
     ports:
-      - "5432:${PG_PORT}"
+      - "5432:5432"
     volumes:
       - pg_data_container:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  backend:
+    build: ./backend/
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    environment:
+      PG_DATABASE: ${PG_DATABASE}
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_PORT: ${PG_PORT}
+      PG_CONTAINER: "postgres"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   pg_data_container:
