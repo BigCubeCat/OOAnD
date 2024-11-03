@@ -1,14 +1,14 @@
 package db
 
 type User struct {
-	SerialID                int `gorm:"primaryKey"`
-	TelegramID              int
-	Handle                  string
-	Username                string
-	Email                   string
-	Password                string
+	SerialID                int    `gorm:"primaryKey"            json:"id"`
+	TelegramID              int    `                             json:"tg"`
+	Handle                  string `                             json:"handle"`
+	Username                string `                             json:"username"`
+	Email                   string `                             json:"email"`
+	Token                   string
 	PriorityPaymentMethodID int
-	Avatar                  string
+	Avatar                  string          `                             json:"avatar"`
 	PaymentMethods          []PaymentMethod `gorm:"foreignKey:UserID"`
 	ResultsAsReceiver       []Result        `gorm:"foreignKey:Receiver"`
 	ResultsAsSender         []Result        `gorm:"foreignKey:Sender"`

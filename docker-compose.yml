@@ -25,6 +25,7 @@ services:
       PG_PASSWORD: ${PG_PASSWORD}
       PG_PORT: ${PG_PORT}
       PG_CONTAINER: "postgres"
+      BACKEND_PORT: ${BACKEND_PORT}
     depends_on:
       postgres:
         condition: service_healthy

@@ -11,6 +11,10 @@ import (
 
 var db *gorm.DB
 
+func GetInstance() *gorm.DB {
+	return db
+}
+
 func InitDB(config config.PgConnectionConfig) {
 	var err error
 	dsn := "postgres://%s:%s@%s:%s/%s"
@@ -26,8 +30,7 @@ func InitDB(config config.PgConnectionConfig) {
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
-		fmt.Println(err)
-		panic(err)
+		log.Fatalf("failed to migrate database: %v", err)
 	}
 	err = db.AutoMigrate(
 		&User{},
