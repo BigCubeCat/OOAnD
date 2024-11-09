@@ -9,6 +9,8 @@ import (
 	"github.com/gofiber/swagger"
 
 	billApi "backend/internal/api/bill"
+	transactionApi "backend/internal/api/transaction"
+
 	handler "backend/internal/api/handlers"
 	middleware "backend/internal/api/middleware"
 
@@ -49,6 +51,10 @@ func Serve(conf config.ApiConfig) {
 	bill.Get("/:id", billApi.GetBill)
 	bill.Delete("/:id", billApi.DeleteBill)
 	bill.Put("/:id", billApi.UpdateBill)
+
+	// transaction
+	transactions := api.Group("/transaction")
+	transactions.Post("/", transactionApi.CreateTransaction)
 
 	app.Listen(":" + portString)
 }

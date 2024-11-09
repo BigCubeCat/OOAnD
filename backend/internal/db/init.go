@@ -37,7 +37,7 @@ func InitDB(config config.PgConnectionConfig) {
 		&PaymentMethod{},
 		&BillPosition{},
 		&Bill{},
-		&Result{},
+		&ClientTransactionRequest{},
 		&Group{},
 	)
 

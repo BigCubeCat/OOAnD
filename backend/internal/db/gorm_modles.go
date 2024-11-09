@@ -1,20 +1,19 @@
 package db
 
 type User struct {
-	SerialID                int    `gorm:"primaryKey"            json:"id"`
-	TelegramID              int    `                             json:"tg"`
-	Handle                  string `                             json:"handle"`
-	Username                string `                             json:"username"`
-	Email                   string `                             json:"email"`
-	Token                   string
-	PriorityPaymentMethodID int
-	Avatar                  string          `                             json:"avatar"`
-	PaymentMethods          []PaymentMethod `gorm:"foreignKey:UserID"`
-	ResultsAsReceiver       []Result        `gorm:"foreignKey:Receiver"`
-	ResultsAsSender         []Result        `gorm:"foreignKey:Sender"`
-	Bills                   []Bill          `gorm:"foreignKey:Owner"`
-	BillPositions           []BillPosition  `gorm:"foreignKey:WhoPaid"`
-	Groups                  []Group         `gorm:"many2many:user_groups"`
+	SerialID                int                        `gorm:"primaryKey"            json:"id"`
+	TelegramID              int                        `                             json:"tg"`
+	Handle                  string                     `                             json:"handle"`
+	Username                string                     `                             json:"username"`
+	Email                   string                     `                             json:"email"`
+	Token                   string                     `                             json:"-"`
+	PriorityPaymentMethodID int                        `                             json:"method_id"`
+	Avatar                  string                     `                             json:"avatar"`
+	PaymentMethods          []PaymentMethod            `gorm:"foreignKey:UserID"     json:"payment_method"`
+	TransactionsAsReceiver  []ClientTransactionRequest `gorm:"foreignKey:Receiver"`
+	TransactionsAsSender    []ClientTransactionRequest `gorm:"foreignKey:Sender"`
+	Bills                   []Bill                     `gorm:"foreignKey:Owner"`
+	Groups                  []Group                    `gorm:"many2many:user_groups"`
 }
 
 type PaymentMethod struct {
@@ -41,17 +40,17 @@ type BillPosition struct {
 	Amount       float64 `                     json:"amount"`
 }
 
-type Result struct {
-	ID       int `gorm:"primaryKey"`
-	Receiver int
-	Sender   int
-	Summary  float64
-	State    int
+type ClientTransactionRequest struct {
+	ID       int     `gorm:"primaryKey" json:"id"`
+	Receiver int     `                  json:"receiver_id"`
+	Sender   int     `                  json:"sender_id"`
+	Summary  float64 `                  json:"summary"`
+	State    string  `                  json:"state"`
 }
 
 type Group struct {
-	ID          int `gorm:"primaryKey"`
-	Name        string
-	Members     int
-	Description string
+	ID          int    `gorm:"primaryKey" json:"group_id"`
+	Name        string `                  json:"group_name"`
+	Members     int    `                  json:"member"`
+	Description string `                  json:"description"`
 }
