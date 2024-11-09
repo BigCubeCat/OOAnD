@@ -55,6 +55,7 @@ func Serve(conf config.ApiConfig) {
 	// transaction
 	transactions := api.Group("/transaction")
 	transactions.Post("/", transactionApi.CreateTransaction)
+	transactions.Delete("/:id", transactionApi.DeleteTransaction)
 
 	app.Listen(":" + portString)
 }
