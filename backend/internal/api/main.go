@@ -48,6 +48,7 @@ func Serve(conf config.ApiConfig) {
 	bill.Get("/all", billApi.GetAllUserBills)
 	bill.Get("/:id", billApi.GetBill)
 	bill.Delete("/:id", billApi.DeleteBill)
+	bill.Put("/:id", billApi.UpdateBill)
 
 	app.Listen(":" + portString)
 }
