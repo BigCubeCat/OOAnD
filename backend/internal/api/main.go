@@ -45,6 +45,8 @@ func Serve(conf config.ApiConfig) {
 	// Bill
 	bill := api.Group("/bill")
 	bill.Post("/", billApi.CreateBill)
+	bill.Get("/all", billApi.GetAllUserBills)
+	bill.Get("/:id", billApi.GetBill)
 
 	app.Listen(":" + portString)
 }

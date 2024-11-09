@@ -1,8 +1,26 @@
 package api
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	log "github.com/sirupsen/logrus"
+)
 
-func CreatePrettyError(c *fiber.Ctx, status int, message string, data error) error {
-	return c.Status(status).
-		JSON(fiber.Map{"status": "error", "message": message, "data": data})
+func createPrettyMessage(
+	c *fiber.Ctx,
+	statusCode int,
+	status string,
+	message string,
+	data interface{},
+) error {
+	return c.Status(statusCode).
+		JSON(fiber.Map{"status": status, "message": message, "data": data})
+}
+
+func CreatePrettyError(c *fiber.Ctx, status int, message string, err error) error {
+	log.Error(err.Error())
+	return createPrettyMessage(c, status, "error", message, nil)
+}
+
+func CreatePrettySuccess(c *fiber.Ctx, data interface{}) error {
+	return c.JSON(fiber.Map{"status": "success", "data": data})
 }
