@@ -57,6 +57,7 @@ func Serve(conf config.ApiConfig) {
 	transactions.Post("/", transactionApi.CreateTransaction)
 	transactions.Patch("/accept/:id", transactionApi.AcceptTransaction)
 	transactions.Patch("/decline/:id", transactionApi.DeclineTransaction)
+	transactions.Patch("/resolve/:id", transactionApi.ResolveTransaction)
 	transactions.Put("/:id", transactionApi.UpdateTransaction)
 	transactions.Delete("/:id", transactionApi.DeleteTransaction)
 

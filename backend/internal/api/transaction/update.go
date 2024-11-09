@@ -64,3 +64,22 @@ func DeclineTransaction(c *fiber.Ctx) error {
 	}
 	return apiUtils.CreatePrettySuccess(c, transaction)
 }
+
+func ResolveTransaction(c *fiber.Ctx) error {
+	var (
+		err         error
+		transaction db.ClientTransactionRequest
+	)
+	transaction.ID, err = apiUtils.ParseId(c)
+	if err != nil {
+		return apiUtils.CreatePrettyError(c, 400, "invalid id", err)
+	}
+	err = db.GetInstance().
+		Model(&transaction).
+		Select("State").
+		Updates(db.ClientTransactionRequest{State: "resolved"}).Error
+	if err != nil {
+		return apiUtils.CreatePrettyError(c, 500, "Cannot resolve transaction", err)
+	}
+	return apiUtils.CreatePrettySuccess(c, transaction)
+}
