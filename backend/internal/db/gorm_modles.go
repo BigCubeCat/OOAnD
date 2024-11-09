@@ -26,18 +26,19 @@ type PaymentMethod struct {
 }
 
 type Bill struct {
-	ID            int `gorm:"primaryKey"`
-	Owner         int
-	Name          string
-	BillPositions []BillPosition `gorm:"foreignKey:IDBill"`
+	ID            int            `gorm:"primaryKey"`
+	Owner         int            `                         json:"owner"`
+	Name          string         `                         json:"name"`
+	BillPositions []BillPosition `gorm:"foreignKey:IDBill" json:"positions"`
 }
 
 type BillPosition struct {
 	ID           int `gorm:"primaryKey"`
 	IDBill       int
-	WhoPaid      int
-	FromWhomPaid int
-	Amount       float64
+	Name         string  `json: "name"`
+	WhoPaid      int     `json:"who_paid"`
+	FromWhomPaid int     `json:"from_whom_paid"`
+	Amount       float64 `json:"amount"`
 }
 
 type Result struct {

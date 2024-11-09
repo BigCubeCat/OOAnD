@@ -3,10 +3,13 @@ package bill
 import (
 	apiUtils "backend/internal/api/utils"
 	"backend/internal/db"
+	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
+
+const BILL_POSITION_TABLE = "BillPosition"
 
 func GetBill(c *fiber.Ctx) error {
 	var (
@@ -21,7 +24,10 @@ func GetBill(c *fiber.Ctx) error {
 	if err != nil {
 		return apiUtils.CreatePrettyError(c, 400, "Invalid Id: "+idParam, err)
 	}
-	err = db.GetInstance().First(&bill, id).Error
+	dbInst := db.GetInstance()
+	err = dbInst.Preload("BillPositions").
+		Where("id = ?", id).
+		First(&bill).Error
 	if err != nil {
 		return apiUtils.CreatePrettyError(c, 404, "bill not found", err)
 	}
@@ -53,7 +59,14 @@ func GetAllUserBills(c *fiber.Ctx) error {
 	}
 
 	offset := (page - 1) * pageSize
-	err = db.GetInstance().Limit(pageSize).Offset(offset).Find(&allBills).Error
+	fmt.Println(offset, page, pageSize)
+	dbInst := db.GetInstance()
+	err = dbInst.Preload("BillPositions").
+		Where("id IN (?)",
+			dbInst.Model(&db.BillPosition{}).
+				Select("id"),
+		).
+		Find(&allBills).Error
 	if err != nil {
 		return apiUtils.CreatePrettyError(c, 404, "page "+pageParam+" not found", err)
 	}
