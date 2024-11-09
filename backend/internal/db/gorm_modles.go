@@ -33,8 +33,8 @@ type Bill struct {
 }
 
 type BillPosition struct {
-	ID           int `gorm:"primaryKey"`
-	IDBill       int
+	ID           int     `gorm:"primaryKey"`
+	IDBill       int     `gorm:"foreignKey:ID"`
 	Name         string  `json: "name"`
 	WhoPaid      int     `json:"who_paid"`
 	FromWhomPaid int     `json:"from_whom_paid"`

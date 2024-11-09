@@ -6,8 +6,6 @@ import (
 	"backend/internal/db"
 
 	"github.com/gofiber/fiber/v2"
-
-	log "github.com/sirupsen/logrus"
 )
 
 func CreateBill(c *fiber.Ctx) error {
@@ -18,17 +16,14 @@ func CreateBill(c *fiber.Ctx) error {
 	bill := new(db.Bill)
 	bill.Name = dto.Name
 	bill.Owner = 1 // TODO: get Owner from context
-	log.Info(dto)
-	for i, pos := range dto.Positions {
+	for _, pos := range dto.Positions {
 		bill.BillPositions = append(bill.BillPositions, db.BillPosition{
 			Name:         pos.Name,
 			WhoPaid:      pos.WhoPaid,
 			FromWhomPaid: pos.FromWhomPaid,
 			Amount:       pos.Amount,
 		})
-		log.Info(i, pos)
 	}
-	log.Println(bill)
 	err := db.GetInstance().Create(bill).Error
 	if err != nil {
 		return apiUtils.CreatePrettyError(c, 500, "Invalid Create", err)

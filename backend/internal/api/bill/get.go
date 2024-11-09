@@ -19,8 +19,7 @@ func GetBill(c *fiber.Ctx) error {
 		bill    db.Bill
 	)
 	// TODO: проверка что пользователь именно тот, что указан в чеке
-	idParam = c.Params("id")
-	id, err = strconv.Atoi(idParam)
+	id, err = apiUtils.ParseId(c)
 	if err != nil {
 		return apiUtils.CreatePrettyError(c, 400, "Invalid Id: "+idParam, err)
 	}

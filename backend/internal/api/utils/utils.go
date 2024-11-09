@@ -1,6 +1,8 @@
 package api
 
 import (
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	log "github.com/sirupsen/logrus"
 )
@@ -23,4 +25,9 @@ func CreatePrettyError(c *fiber.Ctx, status int, message string, err error) erro
 
 func CreatePrettySuccess(c *fiber.Ctx, data interface{}) error {
 	return c.JSON(fiber.Map{"status": "success", "data": data})
+}
+
+func ParseId(c *fiber.Ctx) (int, error) {
+	idParam := c.Params("id")
+	return strconv.Atoi(idParam)
 }
