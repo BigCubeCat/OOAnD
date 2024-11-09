@@ -14,7 +14,15 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/api/user": {
+            "post": {
+                "description": "Создает нового пользователя либо по telegram_id либо по email",
+                "summary": "Создание нового пользователя",
+                "responses": {}
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it

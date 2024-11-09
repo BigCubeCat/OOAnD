@@ -1,4 +1,9 @@
 info:
   contact: {}
-paths: {}
+paths:
+  /api/user:
+    post:
+      description: Создает нового пользователя либо по telegram_id либо по email
+      responses: {}
+      summary: Создание нового пользователя
 swagger: "2.0"

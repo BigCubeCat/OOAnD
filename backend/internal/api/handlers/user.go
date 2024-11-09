@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/go-playground/validator/v10"
@@ -8,7 +9,9 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 
+	"backend/internal/api/dto"
 	"backend/internal/db"
+	"backend/internal/utils"
 )
 
 func hashPassword(password string) (string, error) {
@@ -52,13 +55,11 @@ func GetUser(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"status": "success", "message": "User found", "data": user})
 }
 
-// CreateUser new user
+// CreateUser godoc
+// @Summary Создание нового пользователя
+// @Description Создает нового пользователя либо по telegram_id либо по email
+// @Router /api/user [post]
 func CreateUser(c *fiber.Ctx) error {
-	type NewUser struct {
-		Username string `json:"username"`
-		Email    string `json:"email"`
-	}
-
 	user := new(db.User)
 	if err := c.BodyParser(user); err != nil {
 		return c.Status(500).
@@ -71,6 +72,8 @@ func CreateUser(c *fiber.Ctx) error {
 			JSON(fiber.Map{"message": "Invalid request body", "errors": err.Error()})
 	}
 
+	user.Token = utils.GenerateRandomPassword()
+	fmt.Println("token=", user.Token)
 	hash, err := hashPassword(user.Token)
 	if err != nil {
 		return c.Status(500).
@@ -83,9 +86,12 @@ func CreateUser(c *fiber.Ctx) error {
 			JSON(fiber.Map{"status": "error", "message": "Couldn't create user", "errors": err.Error()})
 	}
 
-	newUser := NewUser{
-		Email:    user.Email,
-		Username: user.Username,
+	newUser := dto.UserAccountDto{
+		Id:         user.SerialID,
+		Email:      user.Email,
+		Handle:     user.Handle,
+		TelegramId: user.TelegramID,
+		Token:      user.Token,
 	}
 
 	return c.JSON(fiber.Map{"status": "success", "message": "Created user", "data": newUser})
@@ -120,27 +126,12 @@ func UpdateUser(c *fiber.Ctx) error {
 }
 
 func DeleteUser(c *fiber.Ctx) error {
-	type PasswordInput struct {
-		Password string `json:"password"`
-	}
-	var pi PasswordInput
-	if err := c.BodyParser(&pi); err != nil {
-		return c.Status(500).
-			JSON(fiber.Map{"status": "error", "message": "Review your input", "errors": err.Error()})
-	}
 	id := c.Params("id")
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {
 		return c.Status(500).
 			JSON(fiber.Map{"status": "error", "message": "Invalid token id", "data": nil})
-
-	}
-
-	if !validUser(id, pi.Password) {
-		return c.Status(500).
-			JSON(fiber.Map{"status": "error", "message": "Not valid user", "data": nil})
-
 	}
 
 	var user db.User

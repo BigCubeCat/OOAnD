@@ -4,6 +4,7 @@ import (
 	"backend/internal/config"
 	"backend/internal/db"
 	"errors"
+	"fmt"
 	"net/mail"
 	"strconv"
 	"time"
@@ -57,6 +58,7 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).
 			JSON(fiber.Map{"status": "error", "message": "Error on login request", "errors": err.Error()})
 	}
+	fmt.Println(input)
 	userModel, err := new(db.User), *new(error)
 	if validEmail(input.Identity) {
 		userModel, err = getUserByEmail(input.Identity)
@@ -68,6 +70,7 @@ func Login(c *fiber.Ctx) error {
 		}
 		userModel, err = getUserByTgId(tgId)
 	}
+	fmt.Println("userModel = ", userModel)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(fiber.Map{"status": "error", "message": "Internal Server Error", "data": err})
@@ -82,15 +85,22 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 	token := jwt.New(jwt.SigningMethodES256)
+	fmt.Println(token)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["id"] = userModel.SerialID
 	claims["email"] = userModel.Email
 	claims["tg_id"] = userModel.TelegramID
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 
+	fmt.Println("claims = ", claims)
+
 	t, err := token.SignedString([]byte(config.GetJwtSecret()))
+	fmt.Println("t=", t)
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		fmt.Println(err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "error", "message": err.Error(), "data": nil,
+		})
 	}
 
 	return c.JSON(fiber.Map{"status": "success", "message": "Success login", "data": t})

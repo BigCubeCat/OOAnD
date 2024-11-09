@@ -3,5 +3,13 @@
     "info": {
         "contact": {}
     },
-    "paths": {}
+    "paths": {
+        "/api/user": {
+            "post": {
+                "description": "Создает нового пользователя либо по telegram_id либо по email",
+                "summary": "Создание нового пользователя",
+                "responses": {}
+            }
+        }
+    }
 }
