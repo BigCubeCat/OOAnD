@@ -34,9 +34,14 @@ services:
   frontend:
     build: ./frontend/
     ports:
-      - 80:80
+      - 80:443
     depends_on:
       - backend
+
+  bot:
+    build: ./tg_bot/
+    ports:
+      - ${TG_BOT_API}:${TG_BOT_API}
 
 volumes:
   pg_data_container:
