@@ -31,17 +31,19 @@ services:
       postgres:
         condition: service_healthy
 
-  frontend:
-    build: ./frontend/
-    ports:
-      - 80:443
-    depends_on:
-      - backend
+  # frontend:
+  #   build: ./frontend/
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     - backend
 
   bot:
     build: ./tg_bot/
+    environment:
+      TG_BOT_TOKEN: ${TG_BOT_TOKEN}
     ports:
-      - ${TG_BOT_API}:${TG_BOT_API}
+      - 7777:${TG_BOT_API_PORT}
 
 volumes:
   pg_data_container:

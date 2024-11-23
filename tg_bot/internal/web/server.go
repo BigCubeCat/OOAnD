@@ -3,7 +3,6 @@ package web
 import (
 	"log"
 	"tg_bot/internal/bot"
-	"tg_bot/internal/config"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -29,5 +28,5 @@ func Serve() {
 		return c.JSON(fiber.Map{"status": "success", "data": nil})
 	})
 
-	log.Fatal(app.Listen(":" + config.GetConfig().ServerPort))
+	log.Fatal(app.Listen(":7777"))
 }
