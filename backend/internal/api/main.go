@@ -10,8 +10,8 @@ import (
 
 	billApi "backend/internal/api/bill"
 	transactionApi "backend/internal/api/transaction"
+	userApi "backend/internal/api/user"
 
-	handler "backend/internal/api/handlers"
 	middleware "backend/internal/api/middleware"
 
 	_ "backend/docs"
@@ -35,31 +35,31 @@ func Serve(conf config.ApiConfig) {
 
 	// Auth
 	auth := api.Group("/auth")
-	auth.Post("/login", handler.Login)
+	auth.Post("/login", userApi.Login)
 
 	// User
 	user := api.Group("/user")
-	user.Get("/:id", handler.GetUser)
-	user.Post("/", handler.CreateUser)
-	user.Patch("/:id", middleware.Protected(), handler.UpdateUser)
-	user.Delete("/:id", middleware.Protected(), handler.DeleteUser)
+	user.Post("/", userApi.CreateUser)
+	user.Get("/:id", middleware.Protected(), userApi.GetUser)
+	user.Patch("/:id", middleware.Protected(), userApi.UpdateUser)
+	user.Delete("/:id", middleware.Protected(), userApi.DeleteUser)
 
 	// Bill
 	bill := api.Group("/bill")
-	bill.Post("/", billApi.CreateBill)
-	bill.Get("/all", billApi.GetAllUserBills)
-	bill.Get("/:id", billApi.GetBill)
-	bill.Delete("/:id", billApi.DeleteBill)
-	bill.Put("/:id", billApi.UpdateBill)
+	bill.Post("/", middleware.Protected(), billApi.CreateBill)
+	bill.Get("/all", middleware.Protected(), billApi.GetAllUserBills)
+	bill.Get("/:id", middleware.Protected(), billApi.GetBill)
+	bill.Delete("/:id", middleware.Protected(), billApi.DeleteBill)
+	bill.Put("/:id", middleware.Protected(), billApi.UpdateBill)
 
 	// transaction
 	transactions := api.Group("/transaction")
-	transactions.Post("/", transactionApi.CreateTransaction)
-	transactions.Patch("/accept/:id", transactionApi.AcceptTransaction)
-	transactions.Patch("/decline/:id", transactionApi.DeclineTransaction)
-	transactions.Patch("/resolve/:id", transactionApi.ResolveTransaction)
-	transactions.Put("/:id", transactionApi.UpdateTransaction)
-	transactions.Delete("/:id", transactionApi.DeleteTransaction)
+	transactions.Post("/", middleware.Protected(), transactionApi.CreateTransaction)
+	transactions.Patch("/accept/:id", middleware.Protected(), transactionApi.AcceptTransaction)
+	transactions.Patch("/decline/:id", middleware.Protected(), transactionApi.DeclineTransaction)
+	transactions.Patch("/resolve/:id", middleware.Protected(), transactionApi.ResolveTransaction)
+	transactions.Put("/:id", middleware.Protected(), transactionApi.UpdateTransaction)
+	transactions.Delete("/:id", middleware.Protected(), transactionApi.DeleteTransaction)
 
 	app.Listen(":" + portString)
 }

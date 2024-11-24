@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"log"
 	"os"
 	"strconv"
 )
@@ -11,21 +12,19 @@ type ApiConfig struct {
 	Secret string
 }
 
-var conf ApiConfig
+var conf *ApiConfig
 
 func LoadApiConfig() (ApiConfig, error) {
-	var cfg ApiConfig
+	conf = new(ApiConfig)
 	var err error
 	portString := os.Getenv("BACKEND_PORT")
 	if portString == "" {
-		return cfg, errors.New("BACKEND_PORT variable not set")
+		return *conf, errors.New("BACKEND_PORT variable not set")
 	}
-	cfg.Secret = os.Getenv("JWT_SECRET")
-	cfg.Port, err = strconv.Atoi(portString)
-	if err != nil {
-		conf = cfg
-	}
-	return cfg, err
+	conf.Secret = os.Getenv("JWT_SECRET")
+	log.Println(conf.Secret)
+	conf.Port, err = strconv.Atoi(portString)
+	return *conf, err
 }
 
 func GetJwtSecret() string {

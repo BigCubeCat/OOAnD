@@ -4,9 +4,9 @@ type User struct {
 	SerialID                int                        `gorm:"primaryKey"            json:"id"`
 	TelegramID              int                        `                             json:"tg"`
 	Handle                  string                     `                             json:"handle"`
-	Username                string                     `                             json:"username"`
 	Email                   string                     `                             json:"email"`
 	Token                   string                     `                             json:"-"`
+	UseTelegram             bool                       `                             json:"-"`
 	PriorityPaymentMethodID int                        `                             json:"method_id"`
 	Avatar                  string                     `                             json:"avatar"`
 	PaymentMethods          []PaymentMethod            `gorm:"foreignKey:UserID"     json:"payment_method"`
