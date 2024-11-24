@@ -1,0 +1,23 @@
+info:
+  contact: {}
+paths:
+  /api/user:
+    post:
+      description: Создает нового пользователя либо по telegram_id либо по email
+      responses: {}
+      summary: Создание нового пользователя
+  /api/user/:id:
+    get:
+      responses: {}
+      summary: Получение пользователя по Id
+    put:
+      description: Обновляет поля пользовател
+      responses: {}
+      summary: Обновление пользователя
+  /login:
+    post:
+      description: Вход через Телеграм или через почту. Создает пользователя, если
+        его нет
+      responses: {}
+      summary: Аутентификация
+swagger: "2.0"
