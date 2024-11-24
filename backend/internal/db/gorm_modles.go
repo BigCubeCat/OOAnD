@@ -17,11 +17,11 @@ type User struct {
 }
 
 type PaymentMethod struct {
-	ID         int `gorm:"primaryKey"`
-	UserID     int
-	Name       string
-	Requisites string
-	Type       string
+	PaymentId  int    `gorm:"primaryKey"`
+	UserID     int    `                  json:"-"`
+	Name       string `                  json:"name"`
+	Requisites string `                  json:"requisites"`
+	Type       string `                  json:"type"`
 }
 
 type Bill struct {

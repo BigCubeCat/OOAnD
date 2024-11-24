@@ -86,9 +86,7 @@ func GetCurrentUserId(c *fiber.Ctx) int {
 
 func GetCurrentUser(c *fiber.Ctx) (*db.User, error) {
 	token := c.Locals("user").(*jwt.Token)
-	log.Println("token=", token)
 	tokenString := getIdFromToken(token)
-	log.Println("tokenString=", token)
 	return GetUserById(tokenString)
 }
 
