@@ -71,14 +71,25 @@ func HashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
+func getIdFromToken(t *jwt.Token) int {
+	claims := t.Claims.(jwt.MapClaims)
+	return int(claims["id"].(float64))
+}
+
+func GetCurrentUser(c *fiber.Ctx) (*db.User, error) {
+	token := c.Locals("user").(*jwt.Token)
+	log.Println("token=", token)
+	tokenString := getIdFromToken(token)
+	log.Println("tokenString=", token)
+	return GetUserById(tokenString)
+}
+
 func ValidToken(t *jwt.Token, id string) bool {
 	n, err := strconv.Atoi(id)
 	if err != nil {
 		return false
 	}
-	claims := t.Claims.(jwt.MapClaims)
-	uid := int(claims["id"].(float64))
-	return uid == n
+	return getIdFromToken(t) == n
 }
 
 func ValidUser(id string) bool {
