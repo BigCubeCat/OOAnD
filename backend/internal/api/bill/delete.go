@@ -1,6 +1,7 @@
 package bill
 
 import (
+	userApi "backend/internal/api/user"
 	apiUtils "backend/internal/api/utils"
 	"backend/internal/db"
 
@@ -23,7 +24,14 @@ func DeleteBill(c *fiber.Ctx) error {
 	if err != nil {
 		return apiUtils.CreatePrettyError(c, 404, "bill not found", err)
 	}
-	log.Info(bill)
+	log.Debug(bill)
+	currentUser, err := userApi.GetCurrentUser(c)
+	if err != nil {
+		return apiUtils.CreatePrettyError(c, 403, "forbidden", err)
+	}
+	if bill.Owner != currentUser.SerialID {
+		return apiUtils.CreatePrettyError(c, 403, "forbidden", err)
+	}
 	for _, pos := range bill.BillPositions {
 		err = dbInst.Delete(&pos).Error
 		if err != nil {

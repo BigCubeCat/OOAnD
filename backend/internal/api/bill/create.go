@@ -5,7 +5,6 @@ import (
 	userApi "backend/internal/api/user"
 	apiUtils "backend/internal/api/utils"
 	"backend/internal/db"
-	"log"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -18,7 +17,6 @@ func CreateBill(c *fiber.Ctx) error {
 	bill := new(db.Bill)
 	bill.Name = dto.Name
 	owner, err := userApi.GetCurrentUser(c)
-	log.Println("owner=", owner)
 	if err != nil {
 		return apiUtils.CreatePrettyError(c, 500, "cant get current user", err)
 	}

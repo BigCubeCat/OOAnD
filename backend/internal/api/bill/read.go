@@ -1,6 +1,7 @@
 package bill
 
 import (
+	userApi "backend/internal/api/user"
 	apiUtils "backend/internal/api/utils"
 	"backend/internal/db"
 	"fmt"
@@ -18,7 +19,6 @@ func GetBill(c *fiber.Ctx) error {
 		err     error
 		bill    db.Bill
 	)
-	// TODO: проверка что пользователь именно тот, что указан в чеке
 	id, err = apiUtils.ParseId(c)
 	if err != nil {
 		return apiUtils.CreatePrettyError(c, 400, "Invalid Id: "+idParam, err)
@@ -30,11 +30,13 @@ func GetBill(c *fiber.Ctx) error {
 	if err != nil {
 		return apiUtils.CreatePrettyError(c, 404, "bill not found", err)
 	}
+	if bill.Owner != userApi.GetCurrentUserId(c) {
+		return apiUtils.CreatePrettyError(c, fiber.StatusForbidden, "forbidden", nil)
+	}
 	return apiUtils.CreatePrettySuccess(c, bill)
 }
 
 func GetAllUserBills(c *fiber.Ctx) error {
-	// TODO: Выбрать только МОИ чеки
 	var (
 		err      error
 		page     int
@@ -60,11 +62,12 @@ func GetAllUserBills(c *fiber.Ctx) error {
 	offset := (page - 1) * pageSize
 	fmt.Println(offset, page, pageSize)
 	dbInst := db.GetInstance()
+	userId := userApi.GetCurrentUserId(c)
 	err = dbInst.Preload("BillPositions").
 		Where("id IN (?)",
 			dbInst.Model(&db.BillPosition{}).
 				Select("id"),
-		).
+		).Where("Owner=?", userId).
 		Find(&allBills).Error
 	if err != nil {
 		return apiUtils.CreatePrettyError(c, 404, "page "+pageParam+" not found", err)

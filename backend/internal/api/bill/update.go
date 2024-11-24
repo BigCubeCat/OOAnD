@@ -2,6 +2,7 @@ package bill
 
 import (
 	"backend/internal/api/dto"
+	userApi "backend/internal/api/user"
 	apiUtils "backend/internal/api/utils"
 	"backend/internal/db"
 
@@ -16,7 +17,10 @@ func UpdateBill(c *fiber.Ctx) error {
 		bill    db.Bill
 	)
 	dbInst := db.GetInstance()
-	// TODO: проверка что пользователь именно тот, что указан в чеке
+	userId := userApi.GetCurrentUserId(c)
+	if bill.Owner != userId {
+		return apiUtils.CreatePrettyError(c, fiber.StatusForbidden, "forbidden", nil)
+	}
 	id, err = apiUtils.ParseId(c)
 	if err != nil {
 		return apiUtils.CreatePrettyError(c, 400, "Invalid Id: "+idParam, err)
@@ -30,7 +34,7 @@ func UpdateBill(c *fiber.Ctx) error {
 		return apiUtils.CreatePrettyError(c, 404, "bill not found", err)
 	}
 	bill.Name = dto.Name
-	bill.Owner = 1 // TODO: get Owner from context
+	bill.Owner = userId
 	for _, pos := range dto.Positions {
 		bill.BillPositions = append(bill.BillPositions, db.BillPosition{
 			Name:         pos.Name,

@@ -76,6 +76,14 @@ func getIdFromToken(t *jwt.Token) int {
 	return int(claims["id"].(float64))
 }
 
+func GetCurrentUserId(c *fiber.Ctx) int {
+	user, err := GetCurrentUser(c)
+	if err != nil {
+		return 0
+	}
+	return user.SerialID
+}
+
 func GetCurrentUser(c *fiber.Ctx) (*db.User, error) {
 	token := c.Locals("user").(*jwt.Token)
 	log.Println("token=", token)
