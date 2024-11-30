@@ -9,6 +9,7 @@ import (
 	"github.com/gofiber/swagger"
 
 	billApi "backend/internal/api/bill"
+	groupsApi "backend/internal/api/groups"
 	paymentApi "backend/internal/api/payment_method"
 	transactionApi "backend/internal/api/transaction"
 	userApi "backend/internal/api/user"
@@ -69,6 +70,12 @@ func Serve(conf config.ApiConfig) {
 	payment.Get("/other/:id", middleware.Protected(), paymentApi.GetPaymentMethods)
 	payment.Get("/my", middleware.Protected(), paymentApi.GetMyPaymentMethods)
 	payment.Patch("/patch/:id", middleware.Protected(), paymentApi.PatchPaymentMethod)
+
+	// groups
+	groups := api.Group("/groups")
+	groups.Post("/", middleware.Protected(), groupsApi.CreateGroup)
+	groups.Delete("/:id", middleware.Protected(), groupsApi.DeleteGroup)
+	groups.Get("/", middleware.Protected(), groupsApi.GetMyGroups)
 
 	app.Listen(":" + portString)
 }

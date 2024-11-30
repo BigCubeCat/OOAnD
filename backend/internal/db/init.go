@@ -38,6 +38,7 @@ func InitDB(config config.PgConnectionConfig) {
 		&BillPosition{},
 		&Bill{},
 		&ClientTransactionRequest{},
+		&UserGroup{},
 		&Group{},
 	)
 
