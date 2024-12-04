@@ -9,6 +9,7 @@ import (
 	"github.com/gofiber/swagger"
 
 	billApi "backend/internal/api/bill"
+	friendsApi "backend/internal/api/friend_request"
 	groupsApi "backend/internal/api/groups"
 	paymentApi "backend/internal/api/payment_method"
 	transactionApi "backend/internal/api/transaction"
@@ -56,6 +57,7 @@ func Serve(conf config.ApiConfig) {
 
 	// transaction
 	transactions := api.Group("/transaction")
+	transactions.Get("/", middleware.Protected(), transactionApi.CreateTransaction)
 	transactions.Post("/", middleware.Protected(), transactionApi.CreateTransaction)
 	transactions.Patch("/accept/:id", middleware.Protected(), transactionApi.AcceptTransaction)
 	transactions.Patch("/decline/:id", middleware.Protected(), transactionApi.DeclineTransaction)
@@ -76,6 +78,14 @@ func Serve(conf config.ApiConfig) {
 	groups.Post("/", middleware.Protected(), groupsApi.CreateGroup)
 	groups.Delete("/:id", middleware.Protected(), groupsApi.DeleteGroup)
 	groups.Get("/", middleware.Protected(), groupsApi.GetMyGroups)
+
+	// friends
+	friends := api.Group("/f")
+	friends.Get("/requests", middleware.Protected(), friendsApi.GetMyFriendRequests)
+	friends.Get("/", middleware.Protected(), friendsApi.GetMyFriendRequests)
+	friends.Post("/", middleware.Protected(), friendsApi.CreateFriendRequest)
+	friends.Patch("/accept/:id", middleware.Protected(), friendsApi.AcceptFriendRequest)
+	friends.Patch("/decline/:id", middleware.Protected(), friendsApi.AcceptFriendRequest)
 
 	app.Listen(":" + portString)
 }

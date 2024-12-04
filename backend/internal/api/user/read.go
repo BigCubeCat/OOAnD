@@ -3,7 +3,6 @@ package user
 import (
 	"backend/internal/db"
 	"errors"
-	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -53,6 +52,5 @@ func GetUserById(id int) (*db.User, error) {
 		}
 		return nil, err
 	}
-	log.Println(user)
 	return &user, nil
 }

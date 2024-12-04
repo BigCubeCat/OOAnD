@@ -15,7 +15,8 @@ type User struct {
 	Bills                   []Bill                     `gorm:"foreignKey:Owner"`
 
 	// Social
-	Friends []*User `gorm:"many2many:user_friends"`
+
+	Friends []User  `gorm:"many2many:user_friends;joinForeignKey:UserID;joinReferences:FriendID;"`
 	Groups  []Group `gorm:"many2many:user_groups;"`
 }
 
@@ -63,4 +64,13 @@ type Group struct {
 	OwnerID     uint   `gorm:"not null"`
 	Owner       User   `gorm:"foreignKey:OwnerID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Users       []User `gorm:"many2many:user_groups;"`
+}
+
+type FriendRequest struct {
+	ID         uint   `gorm:"primaryKey"`
+	FromUserID uint   `gorm:"not null"`
+	FromUser   User   `gorm:"foreignKey:FromUserID;"`
+	ToUserID   uint   `gorm:"not null"`
+	ToUser     User   `gorm:"foreignKey:ToUserID;"`
+	State      string `gorm:"default:'pending';not null"`
 }

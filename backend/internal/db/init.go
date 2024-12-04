@@ -40,6 +40,7 @@ func InitDB(config config.PgConnectionConfig) {
 		&ClientTransactionRequest{},
 		&UserGroup{},
 		&Group{},
+		&FriendRequest{},
 	)
 
 	if err != nil {
