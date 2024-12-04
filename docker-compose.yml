@@ -6,9 +6,44 @@ services:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASSWORD}
     ports:
-      - "5432:${PG_PORT}"
+      - "5432:5432"
     volumes:
       - pg_data_container:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # backend:
+  #   build: ./backend/
+  #   ports:
+  #     - "${BACKEND_PORT}:${BACKEND_PORT}"
+  #   environment:
+  #     PG_DATABASE: ${PG_DATABASE}
+  #     PG_USER: ${PG_USER}
+  #     PG_PASSWORD: ${PG_PASSWORD}
+  #     PG_PORT: ${PG_PORT}
+  #     PG_CONTAINER: "postgres"
+  #     BACKEND_PORT: ${BACKEND_PORT}
+  #     JWT_SECRET: ${JWT_SECRET}
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #
+  # frontend:
+  #   build: ./frontend/
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     - backend
+
+  bot:
+    build: ./tg_bot/
+    environment:
+      TG_BOT_TOKEN: ${TG_BOT_TOKEN}
+    ports:
+      - 7777:${TG_BOT_API_PORT}
 
 volumes:
   pg_data_container:
