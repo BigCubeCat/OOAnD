@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {Box, IconButton, Typography} from "@mui/joy";
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 

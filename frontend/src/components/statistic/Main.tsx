@@ -1,7 +1,8 @@
-import * as React from 'react'
+import {useLocation} from "wouter";
 
 export default  function Main() {
+    const [location] = useLocation();
     return (
-        <div>test</div>
+        <div>{location}</div>
     )
 }

@@ -6,6 +6,9 @@ import Footer from "./bars/Footer.tsx";
 import appTheme from "./themeController.ts";
 import {Box} from "@mui/joy";
 
+import {Route, Switch} from "wouter";
+import LoginScreen from "./login/LoginScreen.tsx";
+
 export default function Sceen() {
     // TODO: понять, авторизиованы ли мы
     return (
@@ -18,7 +21,12 @@ export default function Sceen() {
                 flexDirection: 'column'
             }}>
                 <Header />
-                <Main />
+                <Switch>
+                    <Route path="/" component={Main} />
+                    <Route path="/login/" component={LoginScreen} />
+                    {/* Default route in a switch */}
+                    <Route>404: No such page!</Route>
+                </Switch>
                 <Footer />
             </Box>
         </CssVarsProvider>
