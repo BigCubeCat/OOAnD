@@ -29,24 +29,10 @@ const palette = {
         softDisabledBorder: '#f8f9fa',
     },
     success: {
-        solidBg: '#198754',
-        solidBorder: '#198754',
-        solidHoverBg: '#157347',
-        solidHoverBorder: '#146c43',
-        solidActiveBg: '#146c43',
-        solidActiveBorder: '#13653f',
-        solidDisabledBg: '#198754',
-        solidDisabledBorder: '#198754',
+        100: '#337A45',
     },
     danger: {
-        solidBg: '#dc3545',
-        solidBorder: '#dc3545',
-        solidHoverBg: '#bb2d3b',
-        solidHoverBorder: '#b02a37',
-        solidActiveBg: '#b02a37',
-        solidActiveBorder: '#a52834',
-        solidDisabledBg: '#dc3545',
-        solidDisabledBorder: '#dc3545',
+        100: '#FF5454'
     },
     warning: {
         solidColor: '#000',

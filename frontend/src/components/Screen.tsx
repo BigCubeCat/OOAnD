@@ -1,13 +1,12 @@
-import Main from "./statistic/Main.tsx";
-
 import { CssVarsProvider } from '@mui/joy/styles';
 import Header from "./bars/Header.tsx";
 import Footer from "./bars/Footer.tsx";
-import appTheme from "./themeController.ts";
+import appTheme from "./themeController";
 import {Box} from "@mui/joy";
 
 import {Route, Switch} from "wouter";
-import LoginScreen from "./login/LoginScreen.tsx";
+import LoginScreen from "./login/LoginScreen";
+import Debts from "./statistic/debts/Debts";
 
 export default function Sceen() {
     // TODO: понять, авторизиованы ли мы
@@ -22,7 +21,7 @@ export default function Sceen() {
             }}>
                 <Header />
                 <Switch>
-                    <Route path="/" component={Main} />
+                    <Route path="/" component={Debts} />
                     <Route path="/login/" component={LoginScreen} />
                     {/* Default route in a switch */}
                     <Route>404: No such page!</Route>
