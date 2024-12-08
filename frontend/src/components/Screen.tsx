@@ -10,7 +10,13 @@ export default function Sceen() {
     // TODO: понять, авторизиованы ли мы
     return (
         <CssVarsProvider theme={appTheme}>
-            <Box sx={{width: '100vw', height: '100vh'}}>
+            <Box sx={{
+                width: '100vw',
+                height: '100vh',
+                display:'flex',
+                justifyContent: 'space-between',
+                flexDirection: 'column'
+            }}>
                 <Header />
                 <Main />
                 <Footer />

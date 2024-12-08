@@ -5,6 +5,9 @@ const palette = {
         700: '#FFCB3B',
         400: '#FFCB3B',
     },
+    secondary: {
+        700: '#D9D9D9',
+    },
     neutral: {
         solidBg: '#6c757d',
         solidBorder: '#6c757d',

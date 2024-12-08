@@ -13,7 +13,7 @@ export default function Header() {
             display: 'flex',
             justifyContent: 'space-between', alignItems: 'center'}}>
             <Typography level="h2">Bill & Chill</Typography>
-            <IconButton color={'info.1'}>
+            <IconButton>
                 <PersonOutlineIcon />
             </IconButton>
         </Box>
