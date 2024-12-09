@@ -1,12 +1,13 @@
 export type TUser = {
-    name: string;
-    age: number;
-    count: number;
-    income: number;
-    consumption: number;
-    experience: number;
-    region: string;
-    provision: string;
-    phone: string;
-    inn: string;
+    id: number;
+    tgId: number;
+    handle: string;
+    avatar: string;
+};
+
+export const defaultUser = {
+    id: 0,
+    tgId: 0,
+    handle: '',
+    avatar: '',
 };

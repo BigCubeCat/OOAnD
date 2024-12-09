@@ -1,9 +1,15 @@
 import {Box, Typography} from "@mui/joy";
 import DebtRow from "./DebtRow";
+import useAuthToken from "../../../hooks/useAuthToken.ts";
+import {Redirect} from "wouter";
 
 
 
 export default function Debts() {
+    const {authorized} = useAuthToken();
+    if (!authorized) {
+        return <Redirect to="/login" />;
+    }
     // TODO: get data from redux
     const data = [
         {
