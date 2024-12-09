@@ -2,7 +2,7 @@ import * as React from "react";
 import { Box, Button, IconButton, Input } from "@mui/joy";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SendIcon from "@mui/icons-material/Send";
-import useEmailFormHook from "@hooks/login/email_form_hook";
+import useEmailFormHook from "../../hooks/login/email_form_hook";
 
 type TEmailButtonForm = "button" | "email" | "token";
 
@@ -23,7 +23,7 @@ export default function EmailForm() {
         sx={{ width: 400 }}
         placeholder="Enter email address"
         color={validEmail ? "neutral" : "danger"}
-        valie={email}
+        value={email}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setEmail(e.target.value)
         }

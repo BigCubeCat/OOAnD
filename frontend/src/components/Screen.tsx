@@ -1,14 +1,15 @@
 import { CssVarsProvider } from '@mui/joy/styles';
-import Header from "./bars/Header.tsx";
-import Footer from "./bars/Footer.tsx";
+import Header from "./bars/Header";
+import Footer from "./bars/Footer";
 import appTheme from "./themeController";
-import {Box} from "@mui/joy";
+import {Box, Typography} from "@mui/joy";
 
 import {Route, Switch} from "wouter";
 import LoginScreen from "./login/LoginScreen";
 import Debts from "./statistic/debts/Debts";
+import {apiAddress} from "../utils/env";
 
-export default function Sceen() {
+export default function Screen() {
     // TODO: понять, авторизиованы ли мы
     return (
         <CssVarsProvider theme={appTheme}>
@@ -23,9 +24,10 @@ export default function Sceen() {
                 <Switch>
                     <Route path="/" component={Debts} />
                     <Route path="/login/" component={LoginScreen} />
-                    {/* Default route in a switch */}
-                    <Route>404: No such page!</Route>
                 </Switch>
+                <Typography variant="body2" color="textSecondary">
+                   api= {apiAddress()}
+                </Typography>
                 <Footer />
             </Box>
         </CssVarsProvider>
