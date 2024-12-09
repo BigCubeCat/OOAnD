@@ -46,7 +46,6 @@ func CreateUser(c *fiber.Ctx) error {
 
 	newUser := dto.UserAccountDto{
 		Id:         user.SerialID,
-		Email:      user.Email,
 		Handle:     user.Handle,
 		TelegramId: user.TelegramID,
 		Token:      t,

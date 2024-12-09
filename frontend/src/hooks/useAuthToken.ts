@@ -1,4 +1,4 @@
-import {useAppDispatch, useAppSelector} from '../store/hooks';
+import {useAppSelector} from '../store/hooks';
 
 import {selectToken} from "../store/slices/userSlice.ts";
 
