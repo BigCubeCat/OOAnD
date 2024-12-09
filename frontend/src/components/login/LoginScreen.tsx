@@ -1,24 +1,16 @@
-import { Box } from "@mui/joy";
-import EmailForm from "./email";
+import {LoginButton} from "@telegram-auth/react";
+import {envBotName} from "../../utils/env.ts";
 
 export default function LoginScreen() {
+    console.log(envBotName());
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <Box
-        sx={{
-          width: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "column",
-        }}
-      >
-        <EmailForm />
-      </Box>
-    </Box>
+      <LoginButton
+          botUsername={envBotName()}
+          onAuthCallback={(data: any) => {
+              console.log(typeof data);
+              console.log(data);
+              // call your backend here to validate the data and sign in the user
+          }}
+      />
   );
 }
