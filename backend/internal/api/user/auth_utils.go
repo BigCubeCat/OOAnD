@@ -22,17 +22,14 @@ import (
 // @Router /login [post]
 func Login(c *fiber.Ctx) error {
 	tgId := c.FormValue("telegram_id")
-	email := c.FormValue("email")
-	password := c.FormValue("password")
 
 	userModel, err := new(db.User), *new(error)
-	if email == "test@mail.ru" || password == "" {
-		// УДАЛИТЬ НА ПРОДЕ
-	} else if ValidEmail(email) {
-		userModel, err = GetUserByEmail(email)
+	if tgId == "1" {
+		userModel, err = GetUserById(1)
 		if err != nil {
-			// регистрация
+			userModel = new(db.User)
 		}
+		// УДАЛИТЬ НА ПРОДЕ
 	} else if ValidTelegramId(tgId) {
 		// ошибка была проверена в ValidTelegramId
 		tgIdInt, _ := strconv.Atoi(tgId)
