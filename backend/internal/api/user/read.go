@@ -15,7 +15,7 @@ func GetUser(c *fiber.Ctx) error {
 	id := c.Params("id")
 	var user db.User
 	db.GetInstance().Find(&user, id)
-	if user.Handle == "" {
+	if user.Username == "" {
 		return c.Status(404).
 			JSON(fiber.Map{"status": "error", "message": "No user found with ID", "data": nil})
 	}

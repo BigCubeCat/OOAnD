@@ -49,7 +49,6 @@ func Serve(conf config.ApiConfig) {
 
 	// User
 	user := api.Group("/user")
-	user.Post("/", userApi.CreateUser)
 	user.Get("/:id", middleware.Protected(), userApi.GetUser)
 	user.Patch("/:id", middleware.Protected(), userApi.UpdateUser)
 	user.Delete("/:id", middleware.Protected(), userApi.DeleteUser)

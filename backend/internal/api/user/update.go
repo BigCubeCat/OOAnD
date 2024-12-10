@@ -34,8 +34,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	var user db.User
 	db.GetInstance().First(&user, id)
 
-	user.Handle = newData.Handle
-	user.TelegramID = newData.TelegramID
+	// TODO: а тут надо чета туду?
 
 	db.GetInstance().Save(&user)
 	return apiUtils.CreatePrettySuccess(c, user)

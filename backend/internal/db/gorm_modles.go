@@ -1,16 +1,20 @@
 package db
 
 type User struct {
-	SerialID                int                        `gorm:"primaryKey"          json:"id"`
-	TelegramID              int                        `                           json:"tg"`
-	Handle                  string                     `                           json:"handle"`
-	Token                   string                     `                           json:"-"`
-	Avatar                  string                     `                           json:"avatar"`
-	PriorityPaymentMethodID int                        `                           json:"method_id"`
-	PaymentMethods          []PaymentMethod            `gorm:"foreignKey:UserID"   json:"payment_method"`
-	TransactionsAsReceiver  []ClientTransactionRequest `gorm:"foreignKey:Receiver"`
-	TransactionsAsSender    []ClientTransactionRequest `gorm:"foreignKey:Sender"`
-	Bills                   []Bill                     `gorm:"foreignKey:Owner"`
+	SerialID   int    `gorm:"primaryKey" json:"id"`
+	TelegramID int    `                  json:"telegram_id"`
+	Username   string `                  json:"username"`
+	FirstName  string `                  json:"first_name"`
+	LastName   string `                  json:"last_name"`
+	Avatar     string `                  json:"photo_url"`
+
+	Password                string                     `json:"-"`
+	Token                   string                     `json:"-"`
+	PriorityPaymentMethodID int                        `json:"method_id"`
+	PaymentMethods          []PaymentMethod            `json:"payment_method" gorm:"foreignKey:UserID"`
+	TransactionsAsReceiver  []ClientTransactionRequest `                      gorm:"foreignKey:Receiver"`
+	TransactionsAsSender    []ClientTransactionRequest `                      gorm:"foreignKey:Sender"`
+	Bills                   []Bill                     `                      gorm:"foreignKey:Owner"`
 
 	// Social
 

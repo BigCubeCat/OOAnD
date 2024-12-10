@@ -3,7 +3,7 @@ package user
 import (
 	"backend/internal/config"
 	"backend/internal/db"
-	"log"
+	"errors"
 	"net/mail"
 	"time"
 
@@ -21,37 +21,49 @@ import (
 // @Description Вход через Телеграм или через почту. Создает пользователя, если его нет
 // @Router /login [post]
 func Login(c *fiber.Ctx) error {
-	tgId := c.FormValue("telegram_id")
+	tgId := c.FormValue("id")
+	username := c.FormValue("username")
+	password := c.FormValue("password")
+	photo_url := c.FormValue("photo_url")
+	first_name := c.FormValue("first_name")
+	last_name := c.FormValue("last_name")
 
 	userModel, err := new(db.User), *new(error)
-	if tgId == "1" {
-		userModel, err = GetUserById(1)
-		if err != nil {
-			userModel = new(db.User)
-		}
-		// УДАЛИТЬ НА ПРОДЕ
-	} else if ValidTelegramId(tgId) {
-		// ошибка была проверена в ValidTelegramId
-		tgIdInt, _ := strconv.Atoi(tgId)
+	if ValidTelegramId(tgId) {
+		// Авторизация через телеграм
+		tgIdInt, _ := strconv.Atoi(tgId) // ошибка проверяется в ValidTelegramId
 		userModel, err = GetUserByTgId(tgIdInt)
 		if err != nil {
 			// регистрация
+			return CreateUser(c, tgIdInt, last_name, first_name, username, photo_url)
+		} else {
+			// логин
+			if err != nil {
+				return apiUtils.CreatePrettyError(c, 400, "какая-то ебатория с телеграммом", errors.New("err"))
+			}
+			newUser, err := userDtoFromUser(c, *userModel)
+			if err != nil {
+				return apiUtils.CreatePrettyError(c, 400, "какая-то ебатория с телеграммом", errors.New("err"))
+			}
+			return apiUtils.CreatePrettySuccess(c, newUser)
+		}
+	} else {
+		if password == "" {
+			// Анонимная регистрация
+			newUser, err := anonymousRegister(c, username)
+			if err != nil {
+				return apiUtils.CreatePrettyError(c, 400, "какая-то ебатория с телеграммом", errors.New("err"))
+			}
+			return apiUtils.CreatePrettySuccess(c, newUser)
+		} else {
+			// проверяем парольную фразу
+			newUser, err := anonymousLogin(c, username, password)
+			if err != nil {
+				return apiUtils.CreatePrettyError(c, 400, "какая-то ебатория с телеграммом", errors.New("err"))
+			}
+			return apiUtils.CreatePrettySuccess(c, newUser)
 		}
 	}
-	if userModel == nil {
-		return apiUtils.CreatePrettyError(
-			c,
-			fiber.StatusUnauthorized,
-			"Invalid identity or password",
-			err,
-		)
-	}
-	log.Println("SerialID=", userModel.SerialID)
-	t, err := createToken(userModel.SerialID)
-	if err != nil {
-		return apiUtils.CreatePrettyError(c, fiber.StatusInternalServerError, err.Error(), err)
-	}
-	return apiUtils.CreatePrettySuccess(c, t)
 }
 
 func createToken(id int) (string, error) {
