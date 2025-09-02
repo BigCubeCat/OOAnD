@@ -2,6 +2,7 @@ package user
 
 import (
 	"backend/internal/db"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -9,7 +10,10 @@ import (
 
 func DeleteUser(c *fiber.Ctx) error {
 	id := c.Params("id")
+
 	token := c.Locals("user").(*jwt.Token)
+
+	fmt.Println("locals(user)=", c.Locals("user"))
 
 	if !ValidToken(token, id) {
 		return c.Status(500).

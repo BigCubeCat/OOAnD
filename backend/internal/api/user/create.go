@@ -4,6 +4,7 @@ import (
 	"backend/internal/api/dto"
 	"backend/internal/db"
 	"backend/internal/utils"
+	"errors"
 
 	apiUtils "backend/internal/api/utils"
 
@@ -15,11 +16,21 @@ import (
 // @Summary Создание нового пользователя
 // @Description Создает нового пользователя либо по telegram_id либо по email
 // @Router /api/user [post]
-func CreateUser(c *fiber.Ctx) error {
+func CreateUser(
+	c *fiber.Ctx,
+	telegram_id int,
+	lastname string,
+	firstname string,
+	username string,
+	avatar string,
+) error {
 	user := new(db.User)
-	if err := c.BodyParser(user); err != nil {
-		return apiUtils.CreatePrettyError(c, 500, "Review your input", err)
-	}
+
+	user.TelegramID = telegram_id
+	user.LastName = lastname
+	user.FirstName = firstname
+	user.Username = username
+	user.Avatar = avatar
 
 	validate := validator.New()
 	if err := validate.Struct(user); err != nil {
@@ -46,11 +57,72 @@ func CreateUser(c *fiber.Ctx) error {
 
 	newUser := dto.UserAccountDto{
 		Id:         user.SerialID,
-		Email:      user.Email,
-		Handle:     user.Handle,
+		Username:   user.Username,
+		FirstName:  user.FirstName,
+		LastName:   user.LastName,
 		TelegramId: user.TelegramID,
 		Token:      t,
 	}
 
 	return c.JSON(fiber.Map{"status": "success", "message": "Created user", "data": newUser})
+}
+
+func userDtoFromUser(c *fiber.Ctx, user db.User) (dto.UserAccountDto, error) {
+	var newUser dto.UserAccountDto
+	t, err := createToken(user.SerialID)
+	if err != nil {
+		return newUser, apiUtils.CreatePrettyError(
+			c,
+			fiber.StatusInternalServerError,
+			err.Error(),
+			err,
+		)
+	}
+
+	return dto.UserAccountDto{
+		Id:         user.SerialID,
+		Username:   user.Username,
+		FirstName:  user.FirstName,
+		LastName:   user.LastName,
+		TelegramId: user.TelegramID,
+		Token:      t,
+	}, nil
+}
+
+func anonymousRegister(c *fiber.Ctx, username string) (dto.UserAccountDto, error) {
+	var newUser db.User
+	var newUserDto dto.UserAccountDto
+	dbInst := db.GetInstance()
+	err := dbInst.First(&newUser).Where("username = ?", username).Error
+	if err != nil {
+		return newUserDto, err
+	}
+	if newUser.SerialID > 0 {
+		errorMessage := "user " + username + " already exists"
+		return newUserDto, errors.New(errorMessage)
+	}
+	newUser.Password = utils.GenerateRandomPassword()
+	err = dbInst.Create(&newUser).Error
+	if err != nil {
+		return newUserDto, err
+	}
+	return userDtoFromUser(c, newUser)
+}
+
+func anonymousLogin(c *fiber.Ctx, username string, password string) (dto.UserAccountDto, error) {
+	var newUser db.User
+	var newUserDto dto.UserAccountDto
+	dbInst := db.GetInstance()
+	err := dbInst.First(&newUser).Where("username = ?", username).Error
+	if err != nil {
+		return newUserDto, err
+	}
+	if newUser.SerialID == 0 {
+		errorMessage := "user " + username + " not exists"
+		return newUserDto, errors.New(errorMessage)
+	}
+	if newUser.Password == password {
+		return userDtoFromUser(c, newUser)
+	}
+	return newUserDto, errors.New("bad path phrase")
 }

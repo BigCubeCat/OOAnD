@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
 
@@ -28,6 +29,12 @@ func Serve(conf config.ApiConfig) {
 	portString := strconv.Itoa(conf.Port)
 	app := fiber.New()
 
+	// Or extend your config for customization
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
+
 	// Swagger setup
 	app.Get("/docs/*", swagger.HandlerDefault) // default
 	app.Get("/docs/*", swagger.New(swagger.Config{
@@ -42,7 +49,6 @@ func Serve(conf config.ApiConfig) {
 
 	// User
 	user := api.Group("/user")
-	user.Post("/", userApi.CreateUser)
 	user.Get("/:id", middleware.Protected(), userApi.GetUser)
 	user.Patch("/:id", middleware.Protected(), userApi.UpdateUser)
 	user.Delete("/:id", middleware.Protected(), userApi.DeleteUser)

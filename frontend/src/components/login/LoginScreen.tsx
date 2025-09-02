@@ -1,25 +1,21 @@
-import * as React from "react";
-import { Box } from "@mui/joy";
-import EmailForm from "./email";
+import {LoginButton} from "@telegram-auth/react";
+import {envBotName} from "../../utils/env.ts";
+import {Box} from "@mui/joy";
+import {apiLogin} from "../../api/auth.ts";
 
 export default function LoginScreen() {
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <Box
-        sx={{
-          width: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "column",
-        }}
-      >
-        <EmailForm />
-      </Box>
-    </Box>
-  );
+    console.log(envBotName());
+    return (
+        <Box sx={{display: 'flex', alignContent: 'center'}}>
+            <LoginButton
+                botUsername={envBotName()}
+                onAuthCallback={async (data: any) => {
+                    console.log(typeof data);
+                    console.log(data);
+                    await apiLogin(data);
+                    // call your backend here to validate the data and sign in the user
+                }}
+            />
+        </Box>
+    );
 }
